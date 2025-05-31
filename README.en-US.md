@@ -27,6 +27,7 @@
 - [x] Support Clash `dialer-proxy` attribute
 - [x] Allow adding and using API KEY to access API
 - [x] Import and schedule updates of nodes from subscription links
+- [x] Support AnyTLS and Socks5 protocols
 - [ ] ...
 
 # Project Features
@@ -34,7 +35,7 @@
 - High flexibility and security, supporting subscription record access and simple configuration management;
 - Support for multiple client protocols and formats, including:
     - v2ray (base64 universal format)
-    - clash (support ss, ssr, trojan, vmess, vless, hy, hy2, tuic, AnyTLS)
+    - clash (support ss, ssr, trojan, vmess, vless, hy, hy2, tuic, AnyTLS, Socks5)
     - surge (support ss, trojan, vmess, hy2, tuic)
 - Added token authorization and subscription import functionality, enhancing security and convenience.
 

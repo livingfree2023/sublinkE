@@ -2,11 +2,13 @@ package utils
 
 import (
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/binary"
 	"fmt"
 	"log"
 	"math/big"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -118,4 +120,110 @@ func DecryptUserIDCompact(encrypted string, key []byte) (int, error) {
 	// 转换回用户ID，使用uint32确保不会出现负数
 	userID := int(binary.BigEndian.Uint32(decrypted))
 	return userID, nil
+}
+
+type SqlConfig struct {
+	Clash string `json:"clash"`
+	Surge string `json:"surge"`
+	Udp   bool   `json:"udp"`
+	Cert  bool   `json:"cert"`
+}
+
+// ipv6地址匹配规则
+func UnwrapIPv6Host(s string) string {
+	pattern := `\[([0-9a-fA-F:]+)\]`
+	re := regexp.MustCompile(pattern)
+	match := re.FindStringSubmatch(s)
+	if len(match) > 0 {
+		return match[1]
+	} else {
+		return s
+	}
+}
+
+func WrapIPv6Host(s string) string {
+	// 判断是否已经是 [IPv6] 格式
+	if strings.HasPrefix(s, "[") && strings.HasSuffix(s, "]") {
+		return s
+	}
+
+	// 判断是否是 IPv6 地址（包含冒号但不是域名或 IPv4）
+	if strings.Contains(s, ":") && !strings.ContainsAny(s, ".[]") {
+		return "[" + s + "]"
+	}
+	return s
+}
+
+// 判断是否需要补全
+func IsBase64makeup(s string) string {
+	l := len(s)
+	if l%4 != 0 {
+		return s + strings.Repeat("=", 4-l%4)
+	}
+	return s
+}
+
+// base64编码
+func Base64Encode(s string) string {
+	return base64.StdEncoding.EncodeToString([]byte(s))
+}
+
+// base64解码
+func Base64Decode(s string) string {
+	// 去除空格
+	s = strings.ReplaceAll(s, " ", "")
+	// 判断是否有特殊字符来判断是标准base64还是url base64
+	match, err := regexp.MatchString(`[_-]`, s)
+	if err != nil {
+		fmt.Println(err)
+	}
+	if !match {
+		// 默认使用标准解码
+		encoded := IsBase64makeup(s)
+		decoded, err := base64.StdEncoding.DecodeString(encoded)
+		if err != nil {
+			return s // 返回原字符串
+		}
+		decoded_str := string(decoded)
+		return decoded_str
+
+	} else {
+		// 如果有特殊字符则使用URL解码
+		encoded := IsBase64makeup(s)
+		decoded, err := base64.URLEncoding.DecodeString(encoded)
+		if err != nil {
+			return s // 返回原字符串
+		}
+		decoded_str := string(decoded)
+		return decoded_str
+	}
+}
+
+// base64解码不自动补齐
+func Base64Decode2(s string) string {
+	// 去除空格
+	s = strings.ReplaceAll(s, " ", "")
+	// 判断是否有特殊字符来判断是标准base64还是url base64
+	match, err := regexp.MatchString(`[_-]`, s)
+	if err != nil {
+		fmt.Println(err)
+	}
+	if !match {
+		// 默认使用标准解码
+		decoded, err := base64.StdEncoding.DecodeString(s)
+		if err != nil {
+			return s // 返回原字符串
+		}
+		decoded_str := string(decoded)
+		return decoded_str
+
+	} else {
+		// 如果有特殊字符则使用URL解码
+		decoded, err := base64.URLEncoding.DecodeString(s)
+		if err != nil {
+			return s // 返回原字符串
+		}
+		decoded_str := string(decoded)
+		return decoded_str
+	}
 }

@@ -104,11 +104,6 @@ func CleanupExpiredAccessKeys() error {
 		return fmt.Errorf("查询过期 AccessKey 失败: %w", err)
 	}
 
-	if len(expiredKeys) == 0 {
-		log.Println("没有发现过期的 AccessKey")
-		return nil
-	}
-
 	log.Printf("发现 %d 个过期的 AccessKey，准备清理", len(expiredKeys))
 
 	// 批量删除过期的 AccessKey

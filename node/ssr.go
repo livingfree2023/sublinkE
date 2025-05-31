@@ -29,11 +29,11 @@ func EncodeSSRURL(s Ssr) string {
 	/*编码格式
 	ssr://base64(host:port:protocol:method:obfs:base64(password)/?obfsparam=base64(obfsparam)&protoparam=base64(protoparam)&remarks=base64(remarks)&group=base64(group))
 	*/
-	obfsparam := "obfsparam=" + Base64Encode(s.Qurey.Obfsparam)
-	remarks := "remarks=" + Base64Encode(s.Qurey.Remarks)
+	obfsparam := "obfsparam=" + utils.Base64Encode(s.Qurey.Obfsparam)
+	remarks := "remarks=" + utils.Base64Encode(s.Qurey.Remarks)
 	// 如果没有备注默认使用服务器+端口作为备注
 	if s.Qurey.Remarks == "" {
-		server_port := Base64Encode(s.Server + ":" + strconv.Itoa(s.Port))
+		server_port := utils.Base64Encode(s.Server + ":" + strconv.Itoa(s.Port))
 		remarks = fmt.Sprintf("remarks=%s", server_port)
 	}
 	param := fmt.Sprintf("%s:%d:%s:%s:%s:%s/?%s&%s",
@@ -42,11 +42,11 @@ func EncodeSSRURL(s Ssr) string {
 		s.Protocol,
 		s.Method,
 		s.Obfs,
-		Base64Encode(s.Password),
+		utils.Base64Encode(s.Password),
 		obfsparam,
 		remarks,
 	)
-	return "ssr://" + Base64Encode(param)
+	return "ssr://" + utils.Base64Encode(param)
 
 }
 
@@ -60,7 +60,7 @@ func DecodeSSRURL(s string) (Ssr, error) {
 	if len(parts) != 2 {
 		return Ssr{}, errors.New("invalid SSR URL")
 	}
-	s = parts[0] + Base64Decode(parts[1])
+	s = parts[0] + utils.Base64Decode(parts[1])
 	// 检查是否包含"/?" 如果有就是有备注信息
 	var remarks, obfsparam string
 	if strings.Contains(s, "/?") {
@@ -82,8 +82,8 @@ func DecodeSSRURL(s string) (Ssr, error) {
 			q := strings.Split(query, "=")
 			paramMap[q[0]] = q[1]
 		}
-		remarks = Base64Decode(paramMap["remarks"])
-		obfsparam = Base64Decode(paramMap["obfsparam"])
+		remarks = utils.Base64Decode(paramMap["remarks"])
+		obfsparam = utils.Base64Decode(paramMap["obfsparam"])
 		defer func() {
 			if utils.CheckEnvironment() {
 				fmt.Println("remarks", remarks)
@@ -101,7 +101,7 @@ func DecodeSSRURL(s string) (Ssr, error) {
 	method := param[len(param)-3]
 	protocol := param[len(param)-4]
 	port, _ := strconv.Atoi(param[len(param)-5])
-	server := ValRetIPv6Addr(param[len(param)-6])
+	server := utils.UnwrapIPv6Host(param[len(param)-6])
 	// 如果没有备注默认使用服务器+端口作为备注
 	if remarks == "" {
 		remarks = server + ":" + strconv.Itoa(port)

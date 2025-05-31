@@ -12,6 +12,7 @@ import (
 	"strings"
 	"sublink/models"
 	"sublink/node"
+	"sublink/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -132,7 +133,7 @@ func GetV2ray(c *gin.Context) {
 			}
 			defer resp.Body.Close()
 			body, _ := io.ReadAll(resp.Body)
-			nodes := node.Base64Decode(string(body))
+			nodes := utils.Base64Decode(string(body))
 			baselist += nodes + "\n"
 		// 默认
 		default:
@@ -144,7 +145,7 @@ func GetV2ray(c *gin.Context) {
 	encodedFilename := url.QueryEscape(filename)
 	c.Writer.Header().Set("Content-Disposition", "inline; filename*=utf-8''"+encodedFilename)
 	c.Writer.Header().Set("Content-Type", "text/html; charset=utf-8")
-	c.Writer.WriteString(node.Base64Encode(baselist))
+	c.Writer.WriteString(utils.Base64Encode(baselist))
 }
 func GetClash(c *gin.Context) {
 	var sub models.Subcription
@@ -179,11 +180,11 @@ func GetClash(c *gin.Context) {
 			resp, err := http.Get(v.Link)
 			if err != nil {
 				log.Println(err)
-				return
+				continue
 			}
 			defer resp.Body.Close()
 			body, _ := io.ReadAll(resp.Body)
-			nodes := node.Base64Decode(string(body))
+			nodes := utils.Base64Decode(string(body))
 			links := strings.Split(nodes, "\n")
 			for _, link := range links {
 				urls = append(urls, node.Urls{
@@ -200,7 +201,7 @@ func GetClash(c *gin.Context) {
 		}
 	}
 
-	var configs node.SqlConfig
+	var configs utils.SqlConfig
 	err = json.Unmarshal([]byte(sub.Config), &configs)
 	if err != nil {
 		c.Writer.WriteString("配置读取错误")
@@ -250,7 +251,7 @@ func GetSurge(c *gin.Context) {
 			}
 			defer resp.Body.Close()
 			body, _ := io.ReadAll(resp.Body)
-			nodes := node.Base64Decode(string(body))
+			nodes := utils.Base64Decode(string(body))
 			links := strings.Split(nodes, "\n")
 			urls = append(urls, links...)
 		// 默认
@@ -259,7 +260,7 @@ func GetSurge(c *gin.Context) {
 		}
 	}
 
-	var configs node.SqlConfig
+	var configs utils.SqlConfig
 	err = json.Unmarshal([]byte(sub.Config), &configs)
 	if err != nil {
 		c.Writer.WriteString("配置读取错误")

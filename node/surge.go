@@ -8,9 +8,10 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"sublink/utils"
 )
 
-func EncodeSurge(urls []string, sqlconfig SqlConfig) (string, error) {
+func EncodeSurge(urls []string, sqlconfig utils.SqlConfig) (string, error) {
 	var proxys, groups []string
 	for _, link := range urls {
 		Scheme := strings.Split(link, "://")[0]

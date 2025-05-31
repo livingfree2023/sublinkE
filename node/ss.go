@@ -42,7 +42,7 @@ func parsingSS(s string) (string, string, string) {
 	if u.User == nil {
 		// 截取ss://后的字符串
 		raw := s[5:]
-		s = "ss://" + Base64Decode(raw)
+		s = "ss://" + utils.Base64Decode(raw)
 		u, err = url.Parse(s)
 	}
 	var auth, addr, name string
@@ -70,7 +70,7 @@ func CallSSURL() {
 // ss 编码输出
 func EncodeSSURL(s Ss) string {
 	//编码格式 ss://base64(base64(method:password)@hostname:port)
-	p := Base64Encode(s.Param.Cipher + ":" + s.Param.Password)
+	p := utils.Base64Encode(s.Param.Cipher + ":" + s.Param.Password)
 	// 假设备注没有使用服务器加端口命名
 	if s.Name == "" {
 		s.Name = s.Server + ":" + strconv.Itoa(s.Port)
@@ -88,7 +88,7 @@ func DecodeSSURL(s string) (Ss, error) {
 	// 解析ss链接
 	param, addr, name := parsingSS(s)
 	// base64解码
-	param = Base64Decode(param)
+	param = utils.Base64Decode(param)
 	// 判断是否为空
 	if param == "" || addr == "" {
 		return Ss{}, fmt.Errorf("invalid SS URL")
@@ -96,7 +96,7 @@ func DecodeSSURL(s string) (Ss, error) {
 	// 解析参数
 	parts := strings.Split(addr, ":")
 	port, _ := strconv.Atoi(parts[len(parts)-1])
-	server := strings.Replace(ValRetIPv6Addr(addr), ":"+parts[len(parts)-1], "", -1)
+	server := strings.Replace(utils.UnwrapIPv6Host(addr), ":"+parts[len(parts)-1], "", -1)
 	cipher := strings.Split(param, ":")[0]
 	password := strings.Replace(param, cipher+":", "", 1)
 	// 如果没有备注则使用服务器加端口命名
@@ -105,7 +105,7 @@ func DecodeSSURL(s string) (Ss, error) {
 	}
 	// 开发环境输出结果
 	if utils.CheckEnvironment() {
-		fmt.Println("Param:", Base64Decode(param))
+		fmt.Println("Param:", utils.Base64Decode(param))
 		fmt.Println("Server", server)
 		fmt.Println("Port", port)
 		fmt.Println("Name:", name)

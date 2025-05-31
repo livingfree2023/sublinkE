@@ -27,6 +27,7 @@
 - [x] 支持 Clash `dialer-proxy` 属性
 - [x] 允许添加并使用 API KEY 访问 API
 - [x] 导入、定时更新订阅链接中的节点
+- [x] 支持AnyTLS、Socks5协议
 - [ ] ...
 
 # 项目特色
@@ -34,7 +35,7 @@
 - 高自由度与安全性，支持访问订阅记录及简易配置管理；
 - 支持多种客户端协议及格式，包括：
     - v2ray（base64 通用格式）
-    - clash（支持 ss, ssr, trojan, vmess, vless, hy, hy2, tuic ,AnyTLS）
+    - clash（支持 ss, ssr, trojan, vmess, vless, hy, hy2, tuic, AnyTLS, Socks5）
     - surge（支持 ss, trojan, vmess, hy2, tuic）
 - 新增 token 授权及订阅导入功能，增强安全性和便捷性。
 

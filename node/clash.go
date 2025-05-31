@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sublink/utils"
 
 	"gopkg.in/yaml.v3"
 )
@@ -18,6 +19,7 @@ type Proxy struct {
 	Server             string                 `yaml:"server,omitempty"`
 	Port               int                    `yaml:"port,omitempty"`
 	Cipher             string                 `yaml:"cipher,omitempty"`
+	Username           string                 `yaml:"username,omitempty"`
 	Password           string                 `yaml:"password,omitempty"`
 	Client_fingerprint string                 `yaml:"client-fingerprint,omitempty"`
 	Tfo                bool                   `yaml:"tfo,omitempty"`
@@ -92,7 +94,7 @@ func convertToInt(value interface{}) (int, error) {
 }
 
 // EncodeClash 用于生成 Clash 配置文件
-func EncodeClash(urls []Urls, sqlconfig SqlConfig) ([]byte, error) {
+func EncodeClash(urls []Urls, sqlconfig utils.SqlConfig) ([]byte, error) {
 	// 传入urls，解析urls，生成proxys
 	// yamlfile 为模板文件
 	var proxys []Proxy
@@ -374,10 +376,26 @@ func EncodeClash(urls []Urls, sqlconfig SqlConfig) ([]byte, error) {
 				Skip_cert_verify:   anyTLS.SkipCertVerify,
 				Sni:                anyTLS.SNI,
 				Client_fingerprint: anyTLS.ClientFingerprint,
+				Dialer_proxy:       link.DialerProxyName,
 			}
 
 			proxys = append(proxys, anyTLSProxy)
-
+		case Scheme == "socks5":
+			socks5, err := DecodeSocks5URL(link.Url)
+			if err != nil {
+				log.Println(err)
+				continue
+			}
+			socks5Proxy := Proxy{
+				Name:         socks5.Name,
+				Type:         "socks5",
+				Server:       socks5.Server,
+				Port:         socks5.Port,
+				Username:     socks5.Username,
+				Password:     socks5.Password,
+				Dialer_proxy: link.DialerProxyName,
+			}
+			proxys = append(proxys, socks5Proxy)
 		}
 	}
 	// 生成Clash配置文件

@@ -104,7 +104,7 @@ func DecodeVLESSURL(s string) (VLESS, error) {
 	if !strings.Contains(s, "vless://") {
 		return VLESS{}, fmt.Errorf("非vless协议: %s", s)
 	}
-	s = "vless://" + Base64Decode(strings.Split(s, "://")[1])
+	s = "vless://" + utils.Base64Decode(strings.Split(s, "://")[1])
 	// 解析url
 	u, err := url.Parse(s)
 	if err != nil {

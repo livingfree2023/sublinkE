@@ -12,6 +12,7 @@ import (
 	"strconv"
 	"strings"
 	"sublink/models"
+	"sublink/utils"
 	"time"
 )
 
@@ -48,6 +49,7 @@ func scheduleClashToNodeLinks(proxys []Proxy, subName string) {
 		var node models.Node
 		var link string
 		proxy.Name = subName + proxy.Name
+		proxy.Server = utils.WrapIPv6Host(proxy.Server)
 		switch strings.ToLower(proxy.Type) {
 		case "ss":
 			// ss://method:password@server:port#name
@@ -348,7 +350,7 @@ func scheduleClashToNodeLinks(proxys []Proxy, subName string) {
 		case "anytls":
 			// anytls://password@server:port?sni=sni&insecure=1&fp=chrome#anytls_name
 
-			password := proxy.Password
+			password := url.QueryEscape(proxy.Password)
 			server := proxy.Server
 			port := proxy.Port
 			name := proxy.Name
@@ -364,9 +366,22 @@ func scheduleClashToNodeLinks(proxys []Proxy, subName string) {
 			}
 
 			link = fmt.Sprintf("anytls://%s@%s:%d?%s#%s", password, server, port, query.Encode(), name)
+		case "socks5":
+			// socks5://username:password@server:port#name
+			username := url.QueryEscape(proxy.Username)
+			password := url.QueryEscape(proxy.Password)
+			server := proxy.Server
+			port := proxy.Port
+			name := proxy.Name
+			if username != "" && password != "" {
+				link = fmt.Sprintf("socks5://%s:%s@%s:%d#%s", username, password, server, port, name)
+			} else {
+				link = fmt.Sprintf("socks5://%s:%d#%s", server, port, name)
+			}
+
 		}
 		node.Link = link
-		node.Name = proxy.Name
+		node.Name = url.QueryEscape(proxy.Name)
 		node.Source = "sublinkE"
 		node.CreateDate = time.Now().Format("2006-01-02 15:04:05")
 		// 插入或更新节点，避免设置好的订阅节点丢失

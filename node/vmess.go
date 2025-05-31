@@ -54,7 +54,7 @@ func EncodeVmessURL(v Vmess) string {
 		v.V = "2"
 	}
 	param, _ := json.Marshal(v)
-	return "vmess://" + Base64Encode(string(param))
+	return "vmess://" + utils.Base64Encode(string(param))
 }
 
 // vmess 解码
@@ -63,7 +63,7 @@ func DecodeVMESSURL(s string) (Vmess, error) {
 		return Vmess{}, fmt.Errorf("非vmess协议:%s", s)
 	}
 	param := strings.Split(s, "://")[1]
-	param = Base64Decode(strings.TrimSpace(param))
+	param = utils.Base64Decode(strings.TrimSpace(param))
 	// fmt.Println(param)
 	var vmess Vmess
 	err := json.Unmarshal([]byte(param), &vmess)
@@ -71,7 +71,7 @@ func DecodeVMESSURL(s string) (Vmess, error) {
 		log.Println(err)
 		return Vmess{}, fmt.Errorf("json格式化失败:%s", param)
 	}
-	vmess.Add = ValRetIPv6Addr(vmess.Add)
+	vmess.Add = utils.UnwrapIPv6Host(vmess.Add)
 	if vmess.Scy == "" {
 		vmess.Scy = "auto"
 	}
