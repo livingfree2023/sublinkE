@@ -3,6 +3,7 @@ package api
 import (
 	"strconv"
 	"strings"
+	"sublink/dto"
 	"sublink/models"
 	"time"
 
@@ -177,5 +178,29 @@ func SubDel(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"code": "00000",
 		"msg":  "删除成功",
+	})
+}
+
+func SubSort(c *gin.Context) {
+	var subNodeSort dto.SubcriptionNodeSortUpdate
+	err := c.BindJSON(&subNodeSort)
+	if err != nil {
+		c.JSON(400, gin.H{"msg": "参数错误: " + err.Error()})
+		return
+	}
+
+	var sub models.Subcription
+	sub.ID = subNodeSort.ID
+	err = sub.Sort(subNodeSort)
+
+	if err != nil {
+		c.JSON(400, gin.H{
+			"msg": err.Error(),
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"code": "00000",
+		"msg":  "更新排序成功",
 	})
 }

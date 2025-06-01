@@ -34,3 +34,15 @@ export function UpdateSub(data: any){
     },
   });
 }
+
+
+export function SortSub(data: any){
+  return request({
+    url: "/api/v1/subcription/sort",
+    method: "post",
+    data,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}

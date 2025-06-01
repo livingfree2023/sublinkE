@@ -28,6 +28,7 @@
 - [x] 允许添加并使用 API KEY 访问 API
 - [x] 导入、定时更新订阅链接中的节点
 - [x] 支持AnyTLS、Socks5协议
+- [x] 订阅节点排序
 - [ ] ...
 
 # 项目特色
@@ -54,5 +55,6 @@ docker run --name sublinke -p 8000:8000 \
 ![预览1](webs/src/assets/1.png)
 ![预览2](webs/src/assets/2.png)
 ![预览3](webs/src/assets/3.png)
-![预览3](webs/src/assets/4.png)
+![预览4](webs/src/assets/4.png)
+![预览5](webs/src/assets/5.png)
 

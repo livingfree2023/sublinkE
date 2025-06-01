@@ -4,19 +4,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"strconv"
+	"sublink/dto"
 	"sublink/models"
 	"time"
 )
 
-type UserAccessKey struct {
-	UserName    string `binding:"required"`
-	ExpiredAt   *time.Time
-	Description string
-}
-
 func GenerateAPIKey(c *gin.Context) {
-	var userAccessKey UserAccessKey
-	if err := c.ShouldBindJSON(&userAccessKey); err != nil {
+	var userAccessKey dto.UserAccessKey
+	if err := c.BindJSON(&userAccessKey); err != nil {
 		c.JSON(500, gin.H{"msg": "参数错误"})
 		return
 	}

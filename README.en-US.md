@@ -28,6 +28,7 @@
 - [x] Allow adding and using API KEY to access API
 - [x] Import and schedule updates of nodes from subscription links
 - [x] Support AnyTLS and Socks5 protocols
+- [x] Subscription node sorting
 - [ ] ...
 
 # Project Features
@@ -54,4 +55,5 @@ docker run --name sublinke -p 8000:8000 \
 ![Preview1](webs/src/assets/1.png)
 ![Preview2](webs/src/assets/2.png)
 ![Preview3](webs/src/assets/3.png)
-![Preview3](webs/src/assets/4.png)
+![Preview4](webs/src/assets/4.png)
+![Preview5](webs/src/assets/5.png)

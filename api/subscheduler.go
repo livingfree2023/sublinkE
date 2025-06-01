@@ -3,6 +3,7 @@ package api
 import (
 	"errors"
 	"strconv"
+	"sublink/dto"
 	"sublink/models"
 	"sublink/node"
 	"sublink/services"
@@ -12,14 +13,6 @@ import (
 	"gorm.io/gorm"
 )
 
-type SubSchedulerAddRequest struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name" binding:"required"`
-	URL      string `json:"url" binding:"required,url"`
-	CronExpr string `json:"cron_expr" binding:"required"`
-	Enabled  bool   `json:"enabled"`
-}
-
 func validateFiveFieldCron(expr string) bool {
 	parser := cron.NewParser(cron.Minute | cron.Hour | cron.Dom | cron.Month | cron.Dow)
 	_, err := parser.Parse(expr)
@@ -27,8 +20,8 @@ func validateFiveFieldCron(expr string) bool {
 }
 
 func SubSchedulerAdd(c *gin.Context) {
-	var req SubSchedulerAddRequest
-	err := c.ShouldBindJSON(&req)
+	var req dto.SubSchedulerAddRequest
+	err := c.BindJSON(&req)
 	if err != nil {
 		c.JSON(400, gin.H{"msg": "参数错误: " + err.Error()})
 		return
@@ -125,7 +118,7 @@ func SubSchedulerGet(c *gin.Context) {
 }
 
 func SubSchedulerUpdate(c *gin.Context) {
-	var req SubSchedulerAddRequest
+	var req dto.SubSchedulerAddRequest
 	err := c.BindJSON(&req)
 	if err != nil {
 		c.JSON(400, gin.H{"msg": "参数错误: " + err.Error()})
