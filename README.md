@@ -23,7 +23,7 @@
 # 修改内容
 
 
-- [x] 修复部分 BUG
+- [x] 修复部分页面BUG
 - [x] 支持 Clash `dialer-proxy` 属性
 - [x] 允许添加并使用 API KEY 访问 API
 - [x] 导入、定时更新订阅链接中的节点

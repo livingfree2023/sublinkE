@@ -23,7 +23,7 @@
 # Modifications
 
 
-- [x] Fixed some BUGs
+- [x] Fix some page bugs
 - [x] Support Clash `dialer-proxy` attribute
 - [x] Allow adding and using API KEY to access API
 - [x] Import and schedule updates of nodes from subscription links
