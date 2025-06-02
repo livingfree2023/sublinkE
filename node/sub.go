@@ -305,7 +305,7 @@ func scheduleClashToNodeLinks(proxys []Proxy, subName string) {
 			server := proxy.Server
 			port := proxy.Port
 			auth := proxy.Auth_str
-			name := url.QueryEscape(proxy.Name)
+			name := proxy.Name
 			query := url.Values{}
 			if proxy.Sni != "" {
 				query.Set("sni", proxy.Sni)
@@ -350,7 +350,7 @@ func scheduleClashToNodeLinks(proxys []Proxy, subName string) {
 		case "anytls":
 			// anytls://password@server:port?sni=sni&insecure=1&fp=chrome#anytls_name
 
-			password := url.QueryEscape(proxy.Password)
+			password := proxy.Password
 			server := proxy.Server
 			port := proxy.Port
 			name := proxy.Name
@@ -368,8 +368,8 @@ func scheduleClashToNodeLinks(proxys []Proxy, subName string) {
 			link = fmt.Sprintf("anytls://%s@%s:%d?%s#%s", password, server, port, query.Encode(), name)
 		case "socks5":
 			// socks5://username:password@server:port#name
-			username := url.QueryEscape(proxy.Username)
-			password := url.QueryEscape(proxy.Password)
+			username := proxy.Username
+			password := proxy.Password
 			server := proxy.Server
 			port := proxy.Port
 			name := proxy.Name
@@ -381,7 +381,7 @@ func scheduleClashToNodeLinks(proxys []Proxy, subName string) {
 
 		}
 		node.Link = link
-		node.Name = url.QueryEscape(proxy.Name)
+		node.Name = proxy.Name
 		node.Source = "sublinkE"
 		node.CreateDate = time.Now().Format("2006-01-02 15:04:05")
 		// 插入或更新节点，避免设置好的订阅节点丢失
