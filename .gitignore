@@ -7,3 +7,6 @@ sublink_arm64
 sublink.exe
 *_test.go
 .idea/
+static
+sublinke.exe
+
