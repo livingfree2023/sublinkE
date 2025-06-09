@@ -304,7 +304,7 @@ func scheduleClashToNodeLinks(proxys []Proxy, subName string) {
 			// hysteria2://auth@server:port?sni=sni&insecure=1&obfs=obfs&obfs-password=obfs-password#name
 			server := proxy.Server
 			port := proxy.Port
-			auth := proxy.Auth_str
+			auth := proxy.Password
 			name := proxy.Name
 			query := url.Values{}
 			if proxy.Sni != "" {

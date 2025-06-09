@@ -73,7 +73,7 @@ func main() {
 	var port int
 	// 获取版本号
 	var Isversion bool
-	version = "1.1.6"
+	version = "1.1.7.1"
 	flag.BoolVar(&Isversion, "version", false, "显示版本号")
 	flag.Parse()
 	if Isversion {
