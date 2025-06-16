@@ -14,7 +14,7 @@
 
 # 项目简介
 
-`sublinkE` 是基于 [sublinkX](https://github.com/gooaclok819/sublinkX) 进行二次开发的开源节点订阅转换生成管理系统。
+`sublinkE` 是基于优秀的开源项目  [sublinkX](https://github.com/gooaclok819/sublinkX)  进行二次开发，仅在原项目基础上做了部分定制优化。建议用户优先参考和使用原项目，感谢原作者的付出与贡献。
 
 - 前端基于 [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin)；
 - 后端采用 Go + Gin + Gorm；
