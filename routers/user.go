@@ -17,7 +17,7 @@ func User(r *gin.Engine) {
 	{
 		userGroup.GET("/me", api.UserMe)
 		userGroup.GET("/page", api.UserPages)
-		userGroup.PATCH(":username/:password", api.UserSet)
+		userGroup.POST("/update", api.UserSet)
 
 	}
 }

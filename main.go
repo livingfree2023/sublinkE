@@ -66,14 +66,16 @@ func Templateinit() {
 }
 
 func main() {
+	models.ConfigInit()
+	config := models.ReadConfig() // 读取配置文件
+	var port = config.Port        // 读取端口号
 	err := godotenv.Load()
 	if err != nil {
 		log.Println("未找到.env文件或无法加载，将使用环境变量")
 	}
-	var port int
 	// 获取版本号
 	var Isversion bool
-	version = "1.1.7.1"
+	version = "1.1.7.2"
 	flag.BoolVar(&Isversion, "version", false, "显示版本号")
 	flag.Parse()
 	if Isversion {
@@ -86,7 +88,6 @@ func main() {
 	args := os.Args
 	// 如果长度小于2则没有接收到任何参数
 	if len(args) < 2 {
-		port = 8000
 		Run(port)
 		return
 	}
@@ -105,6 +106,9 @@ func main() {
 		return
 	case "run":
 		settingCmd.Parse(args[2:])
+		models.SetConfig(models.Config{
+			Port: port,
+		}) // 设置端口
 		Run(port)
 	default:
 		return

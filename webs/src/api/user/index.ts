@@ -67,16 +67,22 @@ export function updateUser(id: number, data: UserForm) {
 }
 
 /**
- * 修改用户密码
- *
- * @param id
- * @param password
+ * 修改密码
+ * @param data
  */
-export function updateUserPassword(username: string, password: string) {
+export function updateUserPassword(data: { username: string; password: string }) {
+  const params = new URLSearchParams()
+  params.append('username', data.username)
+  params.append('password', data.password)
+
   return request({
-    url: "/api/v1/users/" + username + `/${password}`,
-    method: "patch",
-  });
+    url: "/api/v1/users/update",
+    method: "post",
+    data: params,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  })
 }
 
 /**

@@ -18,13 +18,13 @@ const password:Ref<string> = ref('')
 /** 重置密码 */
 function resetPassword(row: { [key: string]: any }) {
   if (!username.value || !password.value) {
-        ElMessage.error(t('userset.message.xx1'))
-        return
-      }
-      if ((password.value.length < 6)) {
-        ElMessage.error(t('userset.message.xx2'))
-        return
-      }
+    ElMessage.error(t('userset.message.xx1'))
+    return
+  }
+  if ((password.value.length < 6)) {
+    ElMessage.error(t('userset.message.xx2'))
+    return
+  }
   ElMessageBox.confirm(
     t('userset.message.xx3'),
     t('userset.message.title'),
@@ -35,10 +35,15 @@ function resetPassword(row: { [key: string]: any }) {
     }
   )
     .then(() => {
-      updateUserPassword(username.value.trim(), password.value.trim()).then(() => {
-      ElMessage.success(t('userset.message.xx4') + password.value);
-      window.location.reload();
-    });
+      updateUserPassword({
+          username:username.value.trim(),
+          password:password.value.trim()
+
+        }
+      ).then(() => {
+        ElMessage.success(t('userset.message.xx4') + password.value);
+        window.location.reload();
+      });
     })
 }
 </script>
