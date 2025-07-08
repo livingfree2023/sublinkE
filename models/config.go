@@ -17,9 +17,10 @@ import (
 
 // Config 配置结构体
 type Config struct {
-	JwtSecret  string `yaml:"jwt_secret"`  // JWT密钥
-	ExpireDays int    `yaml:"expire_days"` // 过期天数
-	Port       int    `yaml:"port"`        // 端口号
+	JwtSecret        string `yaml:"jwt_secret"`         // JWT密钥
+	APIEncryptionKey string `yaml:"api_encryption_key"` // API加密密钥
+	ExpireDays       int    `yaml:"expire_days"`        // 过期天数
+	Port             int    `yaml:"port"`               // 端口号
 }
 
 var comment string = `# jwt_secret: JWT密钥
@@ -31,12 +32,13 @@ var comment string = `# jwt_secret: JWT密钥
 func ConfigInit() {
 	// 检查配置文件是否存在
 	if _, err := os.Stat("./db/config.yaml"); os.IsNotExist(err) {
-		R := utils.RandString(31) // 生成随机字符串作为JWT密钥
+
 		// 如果不存在则创建默认配置文件
 		defaultConfig := Config{
-			JwtSecret:  R, // 生成随机JWT密钥
-			ExpireDays: 14,
-			Port:       8000, // 默认端口
+			JwtSecret:        utils.RandString(31), // 生成随机JWT密钥
+			APIEncryptionKey: utils.RandString(31), // 生成随机API加密密钥
+			ExpireDays:       14,
+			Port:             8000, // 默认端口
 		}
 
 		// 生成yaml文件
@@ -72,6 +74,9 @@ func SetConfig(newCfg Config) {
 	// 覆盖新的字段
 	if newCfg.JwtSecret != "" {
 		oldCfg.JwtSecret = newCfg.JwtSecret
+	}
+	if newCfg.APIEncryptionKey != "" {
+		oldCfg.APIEncryptionKey = newCfg.APIEncryptionKey
 	}
 	if newCfg.ExpireDays != 0 {
 		oldCfg.ExpireDays = newCfg.ExpireDays

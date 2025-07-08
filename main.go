@@ -15,8 +15,6 @@ import (
 	"sublink/settings"
 	"sublink/utils"
 
-	"github.com/joho/godotenv"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -69,13 +67,9 @@ func main() {
 	models.ConfigInit()
 	config := models.ReadConfig() // 读取配置文件
 	var port = config.Port        // 读取端口号
-	err := godotenv.Load()
-	if err != nil {
-		log.Println("未找到.env文件或无法加载，将使用环境变量")
-	}
 	// 获取版本号
 	var Isversion bool
-	version = "1.1.7.2"
+	version = "1.1.7.3"
 	flag.BoolVar(&Isversion, "version", false, "显示版本号")
 	flag.Parse()
 	if Isversion {

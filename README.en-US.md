@@ -43,7 +43,6 @@
 # Installation Instructions
 ```bash
 docker run --name sublinke -p 8000:8000 \
--e API_ENCRYPTION_KEY="your-encryption-key" \  //If you need to use API functionality, please set this
 -v $PWD/db:/app/db \
 -v $PWD/template:/app/template \
 -v $PWD/logs:/app/logs \

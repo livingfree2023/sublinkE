@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"net/http"
-	"os"
 	"strings"
 	"sublink/models"
 	"sublink/utils"
@@ -102,10 +101,8 @@ func validApiKey(apiKey string) (string, bool, error) {
 		return "", false, fmt.Errorf("API Key格式错误")
 	}
 
-	encryptionKey := os.Getenv("API_ENCRYPTION_KEY")
-	if encryptionKey == "" {
-		return "", false, fmt.Errorf("未设置API_ENCRYPTION_KEY环境变量")
-	}
+	config := models.ReadConfig()
+	encryptionKey := config.APIEncryptionKey
 
 	// 解密用户ID
 	userID, err := utils.DecryptUserIDCompact(parts[1], []byte(encryptionKey))

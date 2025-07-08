@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"log"
-	"os"
 	"sublink/utils"
 	"time"
 
@@ -56,10 +55,8 @@ func (accessKey *AccessKey) Delete() error {
 
 // GenerateAPIKey 生成一个新的 API Key,单用户系统直接全随机不编码用户信息
 func (accessKey *AccessKey) GenerateAPIKey() (string, error) {
-	encryptionKey := os.Getenv("API_ENCRYPTION_KEY")
-	if encryptionKey == "" {
-		return "", fmt.Errorf("未设置API_ENCRYPTION_KEY环境变量")
-	}
+	config := ReadConfig()
+	encryptionKey := config.APIEncryptionKey
 	encryptedID, err := utils.EncryptUserIDCompact(accessKey.UserID, []byte(encryptionKey))
 	if err != nil {
 		log.Println("加密用户ID失败:", err)
