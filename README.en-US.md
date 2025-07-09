@@ -89,7 +89,7 @@ InterestedEvents() []plugins.EventType
 
 ### Plugin Examples
 
-The system includes the following example plugins for reference:
+The system includes the following example plugins for reference(May become invalid after version updates; it's recommended to compile it yourself.):
 
 | Plugin Name | Description | Source Code | Compiled Version |
 |-------------|-------------|------------|-----------------|
