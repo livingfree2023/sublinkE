@@ -132,6 +132,32 @@ func GetMenus(c *gin.Context) {
 				},
 			},
 		},
+		{
+			Path:      "/plugin",
+			Component: "Layout",
+			Redirect:  "/plugin/index",
+			Name:      "plugin",
+			Meta: Meta{
+				Title:  "plugin",
+				Icon:   "system",
+				Hidden: false,
+				Roles:  []string{"ADMIN"},
+			},
+			Children: []Child{
+				{
+					Path:      "index",
+					Component: "plugin/index",
+					Name:      "PluginList",
+					Meta: Meta{
+						Title:     "PluginList",
+						Icon:      "system",
+						Hidden:    false,
+						Roles:     []string{"ADMIN"},
+						KeepAlive: true,
+					},
+				},
+			},
+		},
 	}
 	c.JSON(200, gin.H{
 		"code": "00000",

@@ -11,7 +11,7 @@ RUN cd webs && pnpm install && pnpm run build
 
 
 # 2. 构建后端
-FROM golang:1.24.3-alpine AS backend-builder
+FROM golang:1.24.3 AS backend-builder
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
@@ -23,15 +23,19 @@ COPY --from=frontend-builder /frontend/webs/dist ./static
 RUN go build -tags=prod -o sublinkE
 
 # 3. 运行镜像
-FROM alpine:latest
+FROM debian:bookworm-slim
 WORKDIR /app
-RUN apk add --no-cache tzdata \
-    && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-    && echo "Asia/Shanghai" > /etc/timezone
-ENV TZ=Asia/Shanghai
-RUN mkdir -p /app/db /app/logs /app/template && chmod 777 /app/db /app/logs /app/template
+
+# 设置时区（Debian）
+RUN apt-get update && apt-get install -y tzdata && \
+    ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    echo "Asia/Shanghai" > /etc/timezone && \
+    apt-get clean
+RUN mkdir -p /app/db /app/logs /app/template /app/plugins && chmod 777 /app/db /app/logs /app/template /app/plugins
+
 COPY --from=backend-builder /app/sublinkE /app/sublinkE
 COPY --from=backend-builder /app/static /app/static
+
 
 EXPOSE 8000
 CMD ["/app/sublinkE"]

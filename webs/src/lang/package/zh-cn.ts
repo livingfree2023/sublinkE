@@ -10,6 +10,8 @@ export default {
     subcription:"订阅管理",
     templatelist:"模板列表",
     apikey: "API密钥管理",
+    plugin: "插件管理",
+    PluginList: "插件列表",
   },
   // 登录页面国际化
   login: {
@@ -96,18 +98,49 @@ export default {
     saveKeyWarning: "请保存此密钥，它只会显示一次！",
     copy: "复制",
     iSavedIt: "我已保存",
+    search: "搜索API密钥",
     fetchFailed: "获取API密钥列表失败",
     createFailed: "创建API密钥失败",
     deleteFailed: "删除API密钥失败",
     deleteSuccess: "API密钥删除成功",
     copySuccess: "复制成功",
-    search: "搜索密钥",
     deleteConfirmTitle: "删除确认",
     deleteConfirmMessage: "确定要删除此API密钥吗？此操作不可撤销。",
     deleting: "正在删除...",
     descriptionRequired: "请输入描述",
     keyCreatedButNotRetrieved: "密钥创建成功，但无法获取密钥值",
     copyFailed: "复制失败，请手动复制",
-    manage: "管理API密钥"
+    manage: "管理API密钥",
   },
-}
+  
+  // 插件管理页面国际化
+  plugin: {
+    title: "插件管理",
+    search: "搜索插件",
+    name: "名称",
+    version: "版本",
+    description: "描述",
+    filePath: "文件路径",
+    status: "状态",
+    enabled: "已启用",
+    disabled: "已禁用",
+    actions: "操作",
+    enable: "启用",
+    disable: "禁用",
+    config: "配置",
+    reload: "重新加载插件",
+    configTitle: "配置插件",
+    configEmpty: "此插件没有可配置项",
+    noData: "暂无插件数据",
+    message: {
+      enableSuccess: "插件启用成功",
+      enableFailed: "插件启用失败",
+      disableSuccess: "插件禁用成功",
+      disableFailed: "插件禁用失败",
+      reloadSuccess: "插件重新加载成功",
+      reloadFailed: "插件重新加载失败",
+      configSuccess: "插件配置保存成功",
+      configFailed: "插件配置保存失败",
+    }
+  }
+};
