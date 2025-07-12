@@ -4,7 +4,6 @@
       <template #header>
         <div class="card-header">
           <div class="left">
-            <span class="title">{{ $t('plugin.title') }}</span>
             <el-input
               v-model="searchQuery"
               :placeholder="$t('plugin.search')"

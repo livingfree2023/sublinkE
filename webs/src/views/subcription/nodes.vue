@@ -1,5 +1,6 @@
 <script setup lang='ts'>
 import { ref,onMounted,nextTick,computed,watch  } from 'vue'
+import { Search, Refresh } from '@element-plus/icons-vue'
 import {getNodes,AddNodes,DelNode,UpdateNode} from "@/api/subcription/node"
 import {getSubSchedulers,addSubScheduler,updateSubScheduler,deleteSubScheduler,type SubScheduler,type SubSchedulerRequest} from "@/api/subcription/scheduler"
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -11,6 +12,7 @@ interface Node {
   CreateDate: string;
 }
 const tableData = ref<Node[]>([])
+const loading = ref(false)
 const Nodelink = ref('')
 const NodeOldlink = ref('')
 const Nodename = ref('')
@@ -56,8 +58,15 @@ const currentSubSchedulerData = computed(() => {
 })
 
 async function getnodes() {
-  const {data} = await getNodes();
+  loading.value = true;
+  try {
+    const {data} = await getNodes();
     tableData.value = data
+  } catch (error) {
+    console.error('获取节点列表失败:', error);
+  } finally {
+    loading.value = false;
+  }
 }
 onMounted(async() => {
    getnodes()
@@ -121,6 +130,25 @@ const handleSelectionChange = (val: Node[]) => {
   multipleSelection.value = val
   
 }
+
+// 搜索功能
+const searchQuery = ref('')
+const handleSearch = () => {
+  // filteredTableData 是计算属性，会自动更新
+}
+
+// 过滤后的节点列表
+const filteredTableData = computed(() => {
+  if (!searchQuery.value) {
+    return tableData.value;
+  }
+  
+  const query = searchQuery.value.toLowerCase();
+  return tableData.value.filter(node => 
+    node.Name.toLowerCase().includes(query) || 
+    node.Link.toLowerCase().includes(query)
+  );
+});
 const selectAll = () => {
     nextTick(() => {
         tableData.value.forEach(row => {
@@ -213,7 +241,7 @@ const handleCurrentChange = (val: number) => {
 const currentTableData = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value;
   const end = start + pageSize.value;
-  return tableData.value.slice(start, end);
+  return filteredTableData.value.slice(start, end);
 });
 
 // 复制链接
@@ -612,11 +640,31 @@ const formatDateTime = (dateTimeString: string) => {
         <el-button type="primary" @click="addnodes">确定</el-button>
       </div>
     </template>
-  </el-dialog>    <el-card>
-    <el-button type="primary" @click="handleAddNode">添加节点</el-button>
-    <el-button type="success" @click="handleImportSubscription" style="margin-left: 10px">导入订阅</el-button>
+  </el-dialog>    <el-card class="box-card">
+      <template #header>
+        <div class="card-header">
+          <el-input
+            v-model="searchQuery"
+            placeholder="搜索节点备注或链接"
+            style="width: 200px"
+            clearable
+            @input="handleSearch"
+          >
+            <template #prefix>
+              <el-icon><Search /></el-icon>
+            </template>
+          </el-input>
+          <el-button type="primary" @click="handleAddNode">添加节点</el-button>
+          <el-button type="success" @click="handleImportSubscription">导入订阅</el-button>
+        </div>
+      </template>
     <div style="margin-bottom: 10px"></div>
-      <el-table ref="table" :data="currentTableData" style="width: 100%" @selection-change="handleSelectionChange">
+      <el-table ref="table" 
+        v-loading="loading"
+        :data="currentTableData" 
+        style="width: 100%" 
+        @selection-change="handleSelectionChange"
+      >
     <el-table-column type="selection" fixed prop="ID" label="id"  />
     <el-table-column prop="Name" label="备注"  >
       <template #default="scope">
@@ -634,6 +682,13 @@ const formatDateTime = (dateTimeString: string) => {
       </template>
     </el-table-column>
   </el-table>
+  
+  <el-empty v-if="!loading && (!filteredTableData || filteredTableData.length === 0)" description="暂无节点数据">
+    <el-button type="primary" @click="getnodes">
+      <el-icon><Refresh /></el-icon>
+      重新加载
+    </el-button>
+  </el-empty>
   <div style="margin-top: 20px" />
     <el-button type="info" @click="selectAll()">全选</el-button>
     <el-button type="warning" @click="toggleSelection()">取消选择</el-button>
@@ -646,7 +701,7 @@ const formatDateTime = (dateTimeString: string) => {
   :page-size="pageSize"
   layout="total, sizes, prev, pager, next, jumper"
   :page-sizes="[10, 20, 30, 40]"
-  :total="tableData.length">
+  :total="filteredTableData.length">
 </el-pagination>    </el-card>    <!-- 导入订阅对话框 -->
     <el-dialog
       v-model="subSchedulerDialogVisible"
@@ -804,5 +859,24 @@ const formatDateTime = (dateTimeString: string) => {
 }
 .el-input{
   margin-bottom: 10px;
+}
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+/* 确保搜索框和按钮高度一致 */
+.card-header .el-input {
+  margin-bottom: 0;
+}
+
+.card-header .el-input :deep(.el-input__wrapper) {
+  height: 32px;
+}
+
+.card-header .el-button {
+  height: 32px;
 }
 </style>
