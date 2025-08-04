@@ -40,6 +40,11 @@ func (node *Node) List() ([]Node, error) {
 
 // 删除节点
 func (node *Node) Del() error {
+	// 先清除节点与订阅的关联关系
+	if err := DB.Exec("DELETE FROM subcription_nodes WHERE node_id = ?", node.ID).Error; err != nil {
+		return err
+	}
+	// 再删除节点本身
 	return DB.Delete(node).Error
 }
 

@@ -80,25 +80,28 @@ const handleAddNode = ()=>{
   dialogVisible.value = true
 
 }
+
 const addnodes = async ()=>{
-  let nodelinks = Nodelink.value.split(/[\r\n,]/);
-  // 分开 过滤空行和空格
-  nodelinks = nodelinks.map((item) => item.trim()).filter((item) => item !== '');  
-   if (NodeTitle.value== '添加节点'){
+  // 分开过滤空行和空格
+  let nodelinks = Nodelink.value.split(/[\r\n,]/)
+    .map((item) => item.trim())
+    .filter((item) => item !== '');
+  
+  if (NodeTitle.value== '添加节点'){
       // 判断合并还是分开
       if (radio1.value === '1') {
         if (Nodename.value.trim() === '') {
           ElMessage.error('备注不能为空')
           return
         }
-        if (nodelinks) {
-        Nodelink.value = nodelinks.join(',');
-        await AddNodes({
-        link: Nodelink.value.trim(),
-        name: Nodename.value.trim(),
-        dialerProxyName: DialerProxyName.value.trim(),
-      })
-      }
+        if (nodelinks.length > 0) {
+          const processedLink = nodelinks.join(',');
+          await AddNodes({
+            link: processedLink,
+            name: Nodename.value.trim(),
+            dialerProxyName: DialerProxyName.value.trim(),
+          })
+        }
       } else {
         for (let i = 0; i < nodelinks.length; i++) {
           await AddNodes({
@@ -110,10 +113,13 @@ const addnodes = async ()=>{
       }
       ElMessage.success("添加成功");
    }else{
+    // 更新节点时处理链接
+    const processedLink = nodelinks.join(',');
+    
     await UpdateNode({
         oldname: NodeOldname.value.trim(),
         oldlink: NodeOldlink.value.trim(),
-        link: Nodelink.value.trim(),
+        link: processedLink,
         name: Nodename.value.trim(),
         dialerProxyName: DialerProxyName.value.trim(),
       })
