@@ -42,13 +42,13 @@ func LoadClashConfigFromURL(url string, subName string) {
 }
 
 func scheduleClashToNodeLinks(proxys []Proxy, subName string) {
-	subName = subName + "_"
+	successCount := 0
 	//_ = models.DeleteAutoSubscriptionNodes(subName)
 
 	for _, proxy := range proxys {
 		var node models.Node
 		var link string
-		proxy.Name = subName + strings.TrimSpace(proxy.Name) // 某些机场的节点名称可能包含空格
+		proxy.Name = subName + "_" + strings.TrimSpace(proxy.Name) // 某些机场的节点名称可能包含空格
 		proxy.Server = utils.WrapIPv6Host(proxy.Server)
 		switch strings.ToLower(proxy.Type) {
 		case "ss":
@@ -60,6 +60,7 @@ func scheduleClashToNodeLinks(proxys []Proxy, subName string) {
 			name := proxy.Name
 			encoded := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", method, password)))
 			link = fmt.Sprintf("ss://%s@%s:%d#%s", encoded, server, port, name)
+			successCount++
 		case "ssr":
 			// ssr://server:port:protocol:method:obfs:base64(password)/?remarks=base64(remarks)&obfsparam=base64(obfsparam)
 			server := proxy.Server
@@ -79,6 +80,7 @@ func scheduleClashToNodeLinks(proxys []Proxy, subName string) {
 			}
 			data := fmt.Sprintf("%s:%d:%s:%s:%s:%s/?%s", server, port, protocol, method, obfs, password, params)
 			link = fmt.Sprintf("ssr://%s", base64.StdEncoding.EncodeToString([]byte(data)))
+			successCount++
 
 		case "trojan":
 			// trojan://password@server:port?参数#name
@@ -154,6 +156,7 @@ func scheduleClashToNodeLinks(proxys []Proxy, subName string) {
 			} else {
 				link = fmt.Sprintf("trojan://%s@%s:%d#%s", password, server, port, name)
 			}
+			successCount++
 
 		case "vmess":
 			// vmess://base64(json)
@@ -189,6 +192,7 @@ func scheduleClashToNodeLinks(proxys []Proxy, subName string) {
 			}
 			jsonData, _ := json.Marshal(vmessObj)
 			link = fmt.Sprintf("vmess://%s", base64.StdEncoding.EncodeToString(jsonData))
+			successCount++
 		case "vless":
 			// vless://uuid@server:port?参数#name
 			uuid := proxy.Uuid
@@ -274,6 +278,7 @@ func scheduleClashToNodeLinks(proxys []Proxy, subName string) {
 			} else {
 				link = fmt.Sprintf("vless://%s@%s:%d#%s", uuid, server, port, name)
 			}
+			successCount++
 		case "hysteria":
 			// hysteria://server:port?protocol=udp&auth=auth&peer=peer&insecure=1&upmbps=up&downmbps=down&alpn=alpn#name
 			server := proxy.Server
@@ -300,6 +305,7 @@ func scheduleClashToNodeLinks(proxys []Proxy, subName string) {
 				query.Set("alpn", strings.Join(proxy.Alpn, ","))
 			}
 			link = fmt.Sprintf("hysteria://%s:%d?%s#%s", server, port, query.Encode(), name)
+			successCount++
 		case "hysteria2":
 			// hysteria2://auth@server:port?sni=sni&insecure=1&obfs=obfs&obfs-password=obfs-password#name
 			server := proxy.Server
@@ -323,6 +329,7 @@ func scheduleClashToNodeLinks(proxys []Proxy, subName string) {
 				query.Set("alpn", strings.Join(proxy.Alpn, ","))
 			}
 			link = fmt.Sprintf("hysteria2://%s@%s:%d?%s#%s", auth, server, port, query.Encode(), name)
+			successCount++
 		case "tuic":
 			// tuic://uuid:password@server:port?sni=sni&congestion_control=congestion_control&alpn=alpn#name
 			uuid := proxy.Uuid
@@ -347,6 +354,7 @@ func scheduleClashToNodeLinks(proxys []Proxy, subName string) {
 				query.Set("disable_sni", "1")
 			}
 			link = fmt.Sprintf("tuic://%s:%s@%s:%d?%s#%s", uuid, password, server, port, query.Encode(), name)
+			successCount++
 		case "anytls":
 			// anytls://password@server:port?sni=sni&insecure=1&fp=chrome#anytls_name
 
@@ -366,6 +374,7 @@ func scheduleClashToNodeLinks(proxys []Proxy, subName string) {
 			}
 
 			link = fmt.Sprintf("anytls://%s@%s:%d?%s#%s", password, server, port, query.Encode(), name)
+			successCount++
 		case "socks5":
 			// socks5://username:password@server:port#name
 			username := proxy.Username
@@ -378,6 +387,7 @@ func scheduleClashToNodeLinks(proxys []Proxy, subName string) {
 			} else {
 				link = fmt.Sprintf("socks5://%s:%d#%s", server, port, name)
 			}
+			successCount++
 
 		}
 		node.Link = link
@@ -387,4 +397,18 @@ func scheduleClashToNodeLinks(proxys []Proxy, subName string) {
 		// 插入或更新节点，避免设置好的订阅节点丢失
 		_ = node.UpsertNode()
 	}
+	subS := models.SubScheduler{
+		Name: subName,
+	}
+	err := subS.Find()
+	if err != nil {
+		log.Printf("获取订阅连接 %s 失败:  %v", subName, err)
+		return
+	}
+	subS.SuccessCount = successCount
+	err1 := subS.Update()
+	if err1 != nil {
+		return
+	}
+
 }

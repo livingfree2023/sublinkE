@@ -731,7 +731,9 @@ const formatDateTime = (dateTimeString: string) => {
             <el-tag type="primary">{{ scope.row.Name }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="URL" label="订阅地址" min-width="200" :show-overflow-tooltip="true" />        <el-table-column prop="CronExpr" label="Cron表达式" min-width="120" />
+        <el-table-column prop="URL" label="订阅地址" min-width="200" :show-overflow-tooltip="true" />
+        <el-table-column prop="CronExpr" label="Cron表达式" min-width="120" />
+        <el-table-column prop="SuccessCount" label="节点数量" min-width="120" />
         <el-table-column prop="LastRunTime" label="上次运行" min-width="160">
           <template #default="scope">
             <span v-if="scope.row.LastRunTime">
