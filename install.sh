@@ -46,7 +46,8 @@ chmod +x "$file_name"
 mv "$file_name" "$INSTALL_DIR/sublink"
 
 # 初始化系统
-cd $INSTALL_DIR && ./sublink setting --port 8000 --username admin --password 123456
+cd $INSTALL_DIR 
+./sublink setting --port 8000 --username admin --password 123456
 
 # 创建服务
 if [ "$is_alpine" = true ]; then
@@ -62,6 +63,7 @@ EOF
     chmod +x /etc/init.d/sublink
     rc-update add sublink default
     rc-service sublink start
+    rc-service sublink restart # workaround 首次初始化出错
 else
     # systemd 服务
     cat > /etc/systemd/system/sublink.service <<EOF
@@ -78,7 +80,9 @@ EOF
     systemctl daemon-reload
     systemctl start sublink
     systemctl enable sublink
+    systemctl restart sublink # workaround 首次初始化出错
 fi
+
 
 
 printf "服务已启动并已设置为开机启动\n"
