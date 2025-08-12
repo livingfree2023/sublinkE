@@ -43,7 +43,10 @@ curl -LO "https://github.com/eun1e/sublinkE/releases/download/$latest_release/$f
 chmod +x "$file_name"
 
 # 移动到指定目录
-cp "$file_name" "$INSTALL_DIR/sublink"
+mv "$file_name" "$INSTALL_DIR/sublink"
+
+# 初始化系统
+cd $INSTALL_DIR && ./sublink setting --port 8000 --username admin --password 123456
 
 # 创建服务
 if [ "$is_alpine" = true ]; then
@@ -76,7 +79,7 @@ EOF
     systemctl start sublink
     systemctl enable sublink
 fi
-cd $INSTALL_DIR && ./sublink setting --port 8000 --username admin --password 123456
+
 
 printf "服务已启动并已设置为开机启动\n"
 printf "默认账号 admin 密码 123456 默认端口 8000\n"
