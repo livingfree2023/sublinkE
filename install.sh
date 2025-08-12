@@ -81,7 +81,8 @@ printf "服务已启动并已设置为开机启动\n"
 printf "默认账号 admin 密码 123456 默认端口 8000\n"
 printf "安装完成已经启动 输入 sublink 可以呼出菜单\n"
 
+# TODO: support alpine in menu.sh
 # 下载 menu.sh 并设置权限
-curl -o /usr/bin/sublink -H "Cache-Control: no-cache" -H "Pragma: no-cache" \
-    https://raw.githubusercontent.com/eun1e/sublinkE/main/menu.sh
-chmod 755 "/usr/bin/sublink"
+#curl -o /usr/bin/sublink -H "Cache-Control: no-cache" -H "Pragma: no-cache" \
+#    https://raw.githubusercontent.com/eun1e/sublinkE/main/menu.sh
+#chmod 755 "/usr/bin/sublink"
