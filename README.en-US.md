@@ -14,7 +14,7 @@
 
 # Project Introduction
 
-`sublinkE` is an open-source node subscription conversion and generation management system based on secondary development of [sublinkX](https://github.com/gooaclok819/sublinkX).
+`sublinkE` is an open-source node subscription conversion and generation management system based on secondary development of [sublinkX](https://github.com/gooaclok819/sublinkX).It is recommended that users give priority to referring to and using the original project, and we sincerely thank the original author for their efforts and contributions.
 
 - Frontend based on [vue3-element-admin](https://github.com/youlaitech/vue3-element-admin);
 - Backend using Go + Gin + Gorm;
