@@ -10,7 +10,7 @@ if [ -f /etc/alpine-release ]; then
     is_alpine=true
     # Alpine 常见缺少 curl
     if ! command -v curl >/dev/null 2>&1; then
-        apk add --no-cache curl
+        apk add --no-cache curl openrc
     fi
 else
     is_alpine=false
