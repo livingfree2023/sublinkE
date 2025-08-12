@@ -30,8 +30,8 @@ printf "最新版本: %s\n" "$latest_release"
 # 检测机器类型
 machine_type=$(uname -m)
 case "$machine_type" in
-    x86_64) file_name="sublink_amd64" ;;
-    aarch64) file_name="sublink_arm64" ;;
+    x86_64) file_name="sublink-linux-amd64" ;;
+    aarch64) file_name="sublink-linux-arm64" ;;
     *) printf "不支持的机器类型: %s\n" "$machine_type"; exit 1 ;;
 esac
 
@@ -43,7 +43,7 @@ curl -LO "https://github.com/eun1e/sublinkE/releases/download/$latest_release/$f
 chmod +x "$file_name"
 
 # 移动到指定目录
-mv "$file_name" "$INSTALL_DIR/sublink"
+cp "$file_name" "$INSTALL_DIR/sublink"
 
 # 创建服务
 if [ "$is_alpine" = true ]; then
@@ -79,9 +79,9 @@ fi
 
 printf "服务已启动并已设置为开机启动\n"
 printf "默认账号 admin 密码 123456 默认端口 8000\n"
-printf "安装完成已经启动 输入 sublink 可以呼出菜单\n"
 
 # TODO: support alpine in menu.sh
+#printf "安装完成已经启动 输入 sublink 可以呼出菜单\n"
 # 下载 menu.sh 并设置权限
 #curl -o /usr/bin/sublink -H "Cache-Control: no-cache" -H "Pragma: no-cache" \
 #    https://raw.githubusercontent.com/eun1e/sublinkE/main/menu.sh
