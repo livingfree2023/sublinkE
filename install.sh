@@ -63,7 +63,8 @@ EOF
     chmod +x /etc/init.d/sublink
     rc-update add sublink default
     rc-service sublink start
-    #rc-service sublink restart # workaround 首次初始化出错
+    sleep 3
+    rc-service sublink restart # workaround 首次初始化出错
 else
     # systemd 服务
     cat > /etc/systemd/system/sublink.service <<EOF
@@ -80,7 +81,8 @@ EOF
     systemctl daemon-reload
     systemctl start sublink
     systemctl enable sublink
-    #systemctl restart sublink # workaround 首次初始化出错
+    sleep 3
+    systemctl restart sublink # workaround 首次初始化出错
 fi
 
 
