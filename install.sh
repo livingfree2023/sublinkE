@@ -8,9 +8,9 @@ fi
 # 检测是否为 Alpine
 if [ -f /etc/alpine-release ]; then
     is_alpine=true
-    # Alpine 常见缺少 curl
+    # Alpine 
     if ! command -v curl >/dev/null 2>&1; then
-        apk add --no-cache curl openrc
+        apk add --no-cache curl openrc libc6-compat
     fi
 else
     is_alpine=false
@@ -47,7 +47,7 @@ mv "$file_name" "$INSTALL_DIR/sublink"
 
 # 初始化系统
 cd $INSTALL_DIR 
-./sublink setting --port 8000 --username admin --password 123456
+./sublink setting --username admin --password 123456
 
 # 创建服务
 if [ "$is_alpine" = true ]; then
@@ -63,7 +63,7 @@ EOF
     chmod +x /etc/init.d/sublink
     rc-update add sublink default
     rc-service sublink start
-    rc-service sublink restart # workaround 首次初始化出错
+    #rc-service sublink restart # workaround 首次初始化出错
 else
     # systemd 服务
     cat > /etc/systemd/system/sublink.service <<EOF
@@ -80,7 +80,7 @@ EOF
     systemctl daemon-reload
     systemctl start sublink
     systemctl enable sublink
-    systemctl restart sublink # workaround 首次初始化出错
+    #systemctl restart sublink # workaround 首次初始化出错
 fi
 
 
