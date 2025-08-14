@@ -64,7 +64,7 @@ EOF
     rc-update add sublink default
     rc-service sublink start
     sleep 3
-    rc-service sublink restart # workaround 首次初始化出错
+    rc-service sublink restart # workaround 首次运行是初始化，需要restart
 else
     # systemd 服务
     cat > /etc/systemd/system/sublink.service <<EOF
@@ -82,7 +82,7 @@ EOF
     systemctl start sublink
     systemctl enable sublink
     sleep 3
-    systemctl restart sublink # workaround 首次初始化出错
+    systemctl restart sublink # workaround 首次运行是初始化，需要restart
 fi
 
 
