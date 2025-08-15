@@ -53,7 +53,7 @@ docker run --name sublinke -p 8000:8000 \
 
 ## 直接安装
 ```bash
-wget https://raw.githubusercontent.com/livingfree2023/sublinkE/refs/heads/main/install.sh && sh install.sh
+wget https://raw.githubusercontent.com/eun1e/sublinkE/refs/heads/main/install.sh && sh install.sh
 ```
 
 # 插件说明
